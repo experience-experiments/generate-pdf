@@ -1,0 +1,5 @@
+{
+  "pdf": {
+    "script": "../pdf/js/html-pdf.js"
+  }
+}
