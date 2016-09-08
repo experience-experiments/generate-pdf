@@ -1,6 +1,6 @@
 {
   "name": "generate-pdf",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "description": "Generate PDFs from React or Hogan",
   "main": "./index.js",
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/JonathanPerryRMA/generate-pdf.git"
+    "url": "git+https://github.com/rma-consulting/generate-pdf.git"
   },
   "license": "UNLICENSED",
   "devDependencies": {
@@ -32,6 +32,7 @@
     "babel-preset-stage-0": "^6.5.0",
     "babel-preset-stage-1": "^6.3.13",
     "babel-register": "^6.9.0",
+    "babel-runtime": "^6.9.2",
     "hogan-cache": "^0.0.2",
     "html-pdf": "^2.1.0",
     "make-face": "^0.0.3",

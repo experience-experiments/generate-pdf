@@ -1,34 +1,81 @@
-# generatePdf()
+# generatePDF()
 
-The `generate-pdf` package defines a Promise interface for creating PDF documents from web pages. In it's simplest form, it looks like:
+The `generate-pdf` package exports a Promise interface for creating PDF documents from web pages. 
+
+In its simplest form:
 
 ```
 const configuration = {};
 
-generatePdf(configuration)
+generatePDF(configuration)	
   .then((pdf) => console.log(pdf))
-  .catch((err) => console.error(err))
+  .catch((e) => console.error(e))
 ```
 
-Of course, you wouldn't want to output a PDF file to the console, and you will need to provide some configuration parameters, too.
+Of course, you wouldn't want to output a PDF file to the console, but you would want to provide some configuration parameters.
 
-To generate the PDF we make use of several other components. We expose their configuration parameters on the configuration object.
+To generate a PDF we make use of several other packages. We expose their configuration parameters on the configuration object: see the **Packages** section.
 
- 
+
+## React + Redux
+
+While the `generate-pdf` package implements some interfaces to [Hogan.js](http://twitter.github.io/hogan.js/) templates, it's meant to be used with isomorphic React. But it isn't opinionated about *how* you implement isomorphic React, so no React or Redux packages are included as dependencies.
+
+For stateful components implementing React Router, we use the `react-routes-renderer` and `redux-routes-renderer` packages. You should visit the repositories for [React.Routes.Render](https://github.com/sequencemedia/React.Routes.Renderer) and [Redux.Routes.Renderer](https://github.com/sequencemedia/Redux.Routes.Renderer) to evaluate them.
+
+For stateless components, we use `react-stateless-renderer`. You should visit [its repository](https://github.com/sequencemedia/React.Stateless.Renderer), too.
+
+Install each separately within your project, as you need them.
+
+We suggest that you use stateless components for rendering the PDF header and footer HTML.
+
+To implement your own rendering mechanism: the `ReactDOMServer` class (from the `react-dom/server` package) exposes the `renderToString()` and `renderToStaticMarkup()` methods. 
+
+Using JSX they could be implemented as:
+
+```
+  ReactDOMServer.renderToString(
+    <Component
+      {...props}
+    />
+  )
+  
+  ReactDOMServer.renderToStaticMarkup(
+    <Component
+      {...props}
+    />
+  )
+```
+
+Without JSX:
+
+```
+  ReactDOMServer.renderToString(
+    ReactDOMServer.createFactory(Component, props)
+  )
+  
+  ReactDOMServer.renderToStaticMarkup(
+    ReactDOMServer.createFactory(Component, props)
+  )
+```
+
+In either case, the `props` object is just a literal. As you'll see in the **Rendering HTML** section, we pass the configuration object to each "thenable" step of the process as we generate a PDF so the `props` object could simply be that configuration object, or another object composed from its attributes.
+
+## Packages
+
 ### make-face
 
-While it's possible to use any of a number of font formats supported by Phantom JS within the main layout of the PDF (the fonts only have to be declared within the CSS used by the rendered HTML page), headers and footers render without fonts unless the font data is embedded in the header and footer HTML fragments, too. 
+While it's possible to use any of a number of font formats supported by Phantom JS within the main layout of the PDF (the fonts only have to be declared within the CSS used by the rendered HTML page), headers and footers render without fonts unless the font data is embedded in the header and footer HTML, too. 
 
 Converting font files to CSS files with data embedded as `base64` is handled by the `make-face` package. You should visit [its repository](https://github.com/rma-consulting/make-face) for usage instructions. 
 
-We use `makeFace` to convert font files to CSS then `readFace` to populate those files to a JSON object (which is the return value of the function).
+We use `makeFace` to convert font files to CSS then `readFace` to populate those files to an object (which is the return value of that function).
 
 To configure the package, you should define a `makeFace` attribute on the parameters object for the method of the same name, and a `readFace` attribute for the method of that name, too.
 
 ```
 { 
-  makeFace: 
-  { 
+  makeFace: { 
     srcPath: '/path/to/src', 
     cssPath: '/path/to/css' 
   }, 
@@ -38,11 +85,19 @@ To configure the package, you should define a `makeFace` attribute on the parame
 }
 ```
 
-There is no return value from `makeFace`, but when `readFace` has executed it will replace the parameters object with the file data it has read. Each key is the (truncated) file path of a CSS file and each value the CSS file data, as a string. Assuming you have one CSS file is named 'Font-Name.css' that object will look something like:
+There is no return value from `makeFace`, but when `readFace` has executed it will replace the `readFace` attribute of the configuration object with its return value. 
+
+Each key is the (truncated) file path of a CSS file and each value is the CSS file data, as a string. Assuming you have one CSS file is named 'FontName.css' then the configuration object will then look something like:
 
 ```
 { 
-  "Font-Name": "@font-face { /* etc */ }"
+  makeFace: { 
+    srcPath: '/path/to/src', 
+    cssPath: '/path/to/css' 
+  }, 
+  readFace: { 
+  	FontName: '@font-face { /* etc */ }'
+  }
 }
 ```
 
@@ -50,15 +105,14 @@ There is no return value from `makeFace`, but when `readFace` has executed it wi
 
 For rendering HTML layouts, headers and footers *without* React, we implement [Hogan.js](http://twitter.github.io/hogan.js/) handled by the `hogan-cache` package.
 
-To configure the package, you should define a `hogan` attribute on the parameters object, with its attributes simply key and value pairs describing a name and a file path for a Hogan template.
+To configure the package, you should define a `hogan` attribute on the configuration object, with its attributes being key and value pairs describing a name and a file path for a Hogan template.
 
 ```
 {
   hogan: { 
-    header: '/path/to/header-template',
-    footer: '/path/to/footer-template',
-    headerPartial: '/path/to/header/partial-template',
-    footerPartial: '/path/to/footer/partial-template'
+    header: '/path/to/header.mustache',
+    footer: '/path/to/footer.mustache',
+    navigation: '/path/to/partials/navigation.mustache'
   }
 }
 ```
@@ -84,9 +138,11 @@ To configure the package, you should define an `htmlPdf` attribute on the parame
   } 
 }
 ```
+Where `http://localhost:8080` is the location of the server from which any assets can be requested.
+
 ## Rendering HTML
 
-Once the `makeFace`, `readFace` and `hogan` sections have been executed, we execute the rendering steps. These are defined as methods on the configuration object.
+Once the `makeFace`, `readFace` and `hogan` sections have executed, we proceed to the rendering steps. These are defined as methods on the configuration object.
 
 ### Either
 
@@ -107,13 +163,19 @@ To clarify, the return value of `render` should be an object having *at least* t
 }
 ````
 
-To clarify, the return values of `layout`, `header` and `footer` should be strings populated with valid HTML. *At least* the layout method should return valid HTML. Otherwise, the `node-html-pdf` package will explode. Honestly. It will.
+To clarify, the return values of `layout`, `header` and `footer` should be strings populated with valid HTML. *At least* the layout method should return valid HTML. Otherwise, the `node-html-pdf` package will explode.
 
-Inside these methods, you can do whatever you like to generate that HTML. Each method is passed the parameters object so that you have access to any `readFace` data or `hogan` templates. Similarly, you can render React components with `ReactDOMServer.renderToString()`. Remember: it's Promises all the way down, so you can return another Promise as long as that eventually returns the appropriate object or string value.
+Inside these methods, you can do whatever you like to generate that HTML. Each method is passed the parameters object so that you have access to any `readFace` data or `hogan` templates. 
+
+Similarly, you can render React components as described in the **React + Redux section**. Remember: it's Promises all the way down, so you can return another Promise as long as it eventually returns the appropriate object or string. 
+
+For the PDF header and footer we recommend you implement stateless components.
+
+For the PDF layout you might prefer to expose your rendering mechanism with a Promise.
 
 ## The PDF
 
-It's a Buffer instance. You can drop it into the `send` method of an Express response:
+The PDF is a Buffer instance. You can pass it into the `send` method of an Express response:
 
 ```
 const configuration = {}
@@ -122,7 +184,7 @@ router.get('/pdf', (req, res) => {
 
   generatePdf(configuration)
     .then((pdf) => { 
-      res.attachment('give me a name.pdf')
+      res.attachment('name.pdf')
       res.send(pdf)
     })
     .catch((e) => {
@@ -131,4 +193,4 @@ router.get('/pdf', (req, res) => {
 
 })
 ```
-Easy.
+The `node-html-pdf` package does implement `toStream()` and `toFile()` methods, but we don't currently support them.
