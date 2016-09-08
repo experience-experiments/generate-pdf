@@ -32,9 +32,9 @@
     "babel-preset-stage-0": "^6.5.0",
     "babel-preset-stage-1": "^6.3.13",
     "babel-register": "^6.9.0",
-    "hogan-cache": "0.0.2",
+    "hogan-cache": "^0.0.2",
     "html-pdf": "^2.1.0",
-    "make-face": "0.0.3",
+    "make-face": "^0.0.3",
     "nconf": "^0.8.4"
   }
 }
