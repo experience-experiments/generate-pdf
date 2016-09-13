@@ -1,8 +1,7 @@
 {
   "name": "generate-pdf",
-  "version": "0.0.3",
-  "private": true,
-  "description": "Generate PDFs from React or Hogan",
+  "version": "0.0.4",
+  "description": "Generate PDFs from React + Redux",
   "main": "./index.js",
   "scripts": {
     "start": "gulp start && node pub/app --react 5002 --hogan 5003",
