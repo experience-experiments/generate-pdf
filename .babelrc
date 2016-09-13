@@ -1,12 +1,15 @@
 {
+  "compact": true,
   "presets": [
     "es2015",
+    "react",
     "stage-0",
     "stage-1"
   ],
   "plugins": [
     "transform-class-properties",
     "transform-object-rest-spread",
-    "transform-runtime"
+    "transform-runtime",
+    "transform-react-jsx"
   ]
 }

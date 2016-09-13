@@ -1,0 +1,67 @@
+
+  @import url(normalize.css);
+  @import url(font-face/Dobra-Light.css);
+  @import url(font-face/Dobra-Medium.css);
+  @import url(font-face/Dobra-Book.css);
+
+  @media print {
+	h1, h2, h2, pre { page-break-inside: avoid; }
+  }
+
+  body {
+    font-family: 'Dobra-Book', sans-serif;
+    line-height: 1.66em;
+  }
+
+  h1 {
+    font-family: 'Dobra-Medium', sans-serif;
+    margin: 1rem;
+    padding-bottom: 0.6em;
+    border-bottom: 1px solid darkred;
+    color: darkred;
+  }
+
+  h2 {
+    font-family: 'Dobra-Light', sans-serif;
+    margin: 1rem;
+    padding-bottom: 0.4em;
+    border-bottom: 1px solid darkred;
+    color: black;
+  }
+
+  h3 {
+    font-family: 'Dobra-Light', sans-serif;
+    margin: 1rem;
+    padding-bottom: 0.4em;
+    border-bottom: 1px solid silver;
+    color: black;
+  }
+
+  p {
+    font-family: 'Dobra-Book', sans-serif;
+    margin: 1rem;
+  }
+
+  pre {
+    white-space: pre-wrap;       /* Since CSS 2.1 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+    padding: 1rem;
+    margin: 1rem;
+    background-color: rgba(0,0,0,0.04);
+    border-radius: 3px;
+  }
+
+  code {
+  	background-color: rgba(0,0,0,0.04);
+  	border-radius: 3px;
+  	padding: 0.2rem;
+  }
+
+  pre code {
+  	background-color: transparent;
+  	border-radius: 0;
+  	padding: 0;
+  }

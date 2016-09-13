@@ -1,11 +1,13 @@
 {
   "name": "generate-pdf",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": true,
   "description": "Generate PDFs from React or Hogan",
   "main": "./index.js",
   "scripts": {
-    "eslint": "eslint ./lib"
+    "start": "gulp start && node pub/app --react 5002 --hogan 5003",
+    "dev": "gulp",
+    "eslint": "eslint lib pub/client pub/server"
   },
   "author": {
     "name": "Jonathan Perry for Sequence Media Limited",
@@ -18,10 +20,37 @@
   },
   "license": "UNLICENSED",
   "devDependencies": {
+    "axios": "^0.14.0",
     "babel-eslint": "^6.1.0",
+    "babel-loader": "^6.2.5",
+    "body-parser": "^1.15.2",
+    "cors": "^2.8.1",
+    "dotenv": "^2.0.0",
     "eslint-config-standard": "^6.0.0",
     "eslint-plugin-promise": "^2.0.1",
-    "eslint-plugin-standard": "^2.0.0"
+    "eslint-plugin-standard": "^2.0.0",
+    "express": "^4.14.0",
+    "express-hogan-cache": "0.0.2",
+    "gulp": "^3.9.1",
+    "gulp-clean": "^0.3.2",
+    "gulp-develop-server": "^0.5.2",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-uglify": "^2.0.0",
+    "html-to-react": "^1.0.0",
+    "json-loader": "^0.5.4",
+    "pug": "^2.0.0-beta6",
+    "react": "^15.3.1",
+    "react-dom": "^15.3.1",
+    "react-redux": "^4.4.5",
+    "react-router": "^2.8.0",
+    "react-stateless-renderer": "0.0.2",
+    "redux": "^3.6.0",
+    "redux-routes-renderer": "^1.2.3",
+    "remark": "^6.0.1",
+    "remark-html": "^5.0.1",
+    "sacred-fs": "^0.1.0",
+    "webpack": "^1.13.2",
+    "webpack-stream": "^3.2.0"
   },
   "dependencies": {
     "babel-core": "^6.10.4",
@@ -35,7 +64,7 @@
     "babel-runtime": "^6.9.2",
     "hogan-cache": "^0.0.2",
     "html-pdf": "^2.1.0",
-    "make-face": "^0.0.3",
+    "make-face": "^0.0.4",
     "nconf": "^0.8.4"
   }
 }
